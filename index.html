@@ -1,1 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EcoleApp – L’école, orchestrée</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0d1f;--ink:#f3f4ff;--mut:#a9aed0;--card:#141a38;--line:#262d5a;--ind:#5b4cf0;--vio:#9b7bff;--grn:#14c38e;--amb:#f5a524;--pnk:#ec4899;color-scheme:dark;
+--d:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--b:'Instrument Sans','Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font:400 clamp(15px,1.5vw,18px)/1.55 var(--b)}
+#glow{position:fixed;inset:-20%;z-index:0;pointer-events:none;background:radial-gradient(40% 40% at var(--x,70%) var(--y,20%),#5b4cf055,transparent 70%),radial-gradient(35% 35% at calc(100% - var(--x,70%)) calc(100% - var(--y,20%)),#ec489933,transparent 70%);transition:background .9s}
+header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 14px) 28px 10px}
+.logo{display:flex;align-items:center;gap:10px;font:800 20px var(--d)}
+.logo i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ind);font-style:normal}
+.pill{background:var(--grn);color:#04281c;font-weight:600;font-size:13px;padding:6px 14px;border-radius:99px}
+#bar{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--ind),var(--pnk));z-index:30;transition:width .7s cubic-bezier(.7,0,.2,1)}
+nav{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:10px}
+nav button{width:10px;height:10px;border-radius:50%;border:0;background:#fff3;cursor:pointer;transition:.4s;padding:0}
+nav button.on{background:var(--vio);height:28px;border-radius:6px}
+nav button:focus-visible,.ctl button:focus-visible,.tg button:focus-visible{outline:2px solid var(--vio);outline-offset:3px}
+.ctl{position:fixed;left:28px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:20;display:flex;gap:10px;align-items:center;color:var(--mut);font-size:14px}
+.ctl button{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#141a38cc;color:var(--ink);font-size:18px;cursor:pointer;transition:.3s}
+.ctl button:hover{background:var(--ind)}
+main{position:relative;height:100%;z-index:1}
+.s{position:absolute;inset:0;padding:calc(env(safe-area-inset-top,0px) + 80px) clamp(24px,8vw,120px) calc(env(safe-area-inset-bottom,0px) + 80px);display:flex;flex-direction:column;justify-content:center;overflow-y:auto;opacity:0;visibility:hidden;transform:translateY(6%) scale(.98);transition:opacity .7s,transform .9s cubic-bezier(.7,0,.2,1),visibility 0s .9s}
+.s.past{transform:translateY(-6%) scale(.98)}
+.s.on{opacity:1;visibility:visible;transform:none;transition:opacity .7s .15s,transform .9s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.s>*{max-width:1080px;width:100%}
+.s .r{opacity:0;transform:translateY(22px)}
+.s.on .r{opacity:1;transform:none;transition:opacity .7s calc(.3s + var(--i,0)*.09s),transform .8s calc(.3s + var(--i,0)*.09s) cubic-bezier(.2,.8,.2,1)}
+h1,h2{font-family:var(--d);font-weight:800;line-height:1.02;letter-spacing:-.02em}
+h1{font-size:clamp(46px,9vw,118px)}
+h2{font-size:clamp(30px,4.8vw,60px);margin-bottom:14px}
+h1 em,h2 em{font-style:normal;background:linear-gradient(90deg,var(--vio),var(--pnk));-webkit-background-clip:text;background-clip:text;color:transparent}
+.k{color:var(--vio);font-weight:600;font-size:14px;margin-bottom:10px}
+.lead{color:var(--mut);max-width:60ch;margin:16px 0 26px}
+.g{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;transition:transform .4s,border-color .4s}
+.c:hover{transform:translateY(-4px);border-color:var(--vio)}
+.c h3{font:800 19px var(--d);margin-bottom:6px}
+.c p{color:var(--mut);font-size:.93em}
+.big{font:800 clamp(38px,5vw,64px)/1 var(--d)}
+.big small{font:500 15px var(--b);color:var(--mut);display:block;margin-top:6px}
+.i{color:var(--ind)}.v{color:var(--vio)}.gr{color:var(--grn)}.a{color:var(--amb)}.p{color:var(--pnk)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+.q{font:500 clamp(20px,2.6vw,32px)/1.3 var(--d);max-width:24ch;margin-top:26px;color:var(--ink)}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.t{border-left:3px solid var(--ind);padding-left:14px}
+.t b{font-family:var(--d)}
+.sim{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:6px}
+.tg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px;margin-bottom:16px}
+.tg button{border:0;background:none;color:var(--mut);padding:8px 18px;border-radius:99px;cursor:pointer;font:600 14px var(--b);transition:.3s}
+.tg button.on{background:var(--ind);color:#fff}
+input[type=range]{width:100%;accent-color:var(--vio);margin:8px 0 18px}
+.pr{font:800 clamp(34px,4.4vw,54px)/1 var(--d)}
+.pr small{font:500 14px var(--b);color:var(--mut)}
+.rec{border-color:var(--ind);background:linear-gradient(160deg,#2a2468,var(--card))}
+.cta{display:inline-block;margin-top:24px;background:var(--grn);color:#04281c;font:800 22px var(--d);padding:16px 38px;border-radius:99px;text-decoration:none;transition:transform .3s,box-shadow .3s}
+.cta:hover{transform:scale(1.05);box-shadow:0 10px 40px #14c38e55}
+ul.l{list-style:none;padding:0;display:grid;gap:6px;margin-top:8px;color:var(--mut);font-size:.93em}
+ul.l li::before{content:"✓ ";color:var(--grn);font-weight:700}
+ul.l li.no::before{content:"– ";color:var(--mut)}
+.wa{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:25;display:flex;align-items:center;gap:8px;background:#25d366;color:#052e16;font:600 15px var(--b);padding:12px 20px;border-radius:99px;text-decoration:none;box-shadow:0 8px 28px #25d36655;transition:transform .3s}.wa:hover{transform:scale(1.06)}.wa:focus-visible{outline:2px solid #fff;outline-offset:3px}.cta.w{background:#25d366;margin-left:12px}
+@media(max-width:700px){.wa{padding:12px 16px}.cta.w{margin-left:0}header{padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 8px}.pill{display:none}nav{display:none}.ctl{left:16px}.s{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}.s .r{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="glow"></div><div id="bar"></div>
+<header><div class="logo"><i>E</i>EcoleApp</div><span class="pill">Dès 0,50 $ par élève et par mois</span></header>
+<nav id="dots" aria-label="Diapositives"></nav>
+<a class="wa" href="https://wa.me/243972519906?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20EcoleApp." target="_blank" rel="noopener">💬 Contactez-nous sur WhatsApp</a>
+<div class="ctl"><button id="pv" aria-label="Précédent">↑</button><button id="nx" aria-label="Suivant">↓</button><span id="ct"></span></div>
 
+<main id="m">
+
+<section class="s">
+<h1 class="r" style="--i:0">L’école,<br><em>orchestrée.</em></h1>
+<p class="lead r" style="--i:1;font-size:1.15em">Un seul système pour la direction, les enseignants, les élèves et les parents. Plus simple, plus clair, et à un prix que personne ne discute.</p>
+<p class="r" style="--i:2;color:var(--mut)">Édition 2026 · Faites défiler ou utilisez les flèches du clavier</p>
+</section>
+
+<section class="s">
+<p class="k r">L’essentiel</p>
+<h2 class="r" style="--i:1">Ce que vous gagnez <em>dès le premier jour</em></h2>
+<div class="g">
+<div class="c r" style="--i:2"><h3><span class="dot" style="background:var(--ind)"></span>Un seul système</h3><p>Direction, enseignants, élèves et parents travaillent sur la même base, chacun dans son espace.</p></div>
+<div class="c r" style="--i:3"><h3><span class="dot" style="background:var(--vio)"></span>Zéro ressaisie</h3><p>Importez des centaines d’élèves depuis Excel : matricules et mots de passe se génèrent seuls.</p></div>
+<div class="c r" style="--i:4"><h3><span class="dot" style="background:var(--grn)"></span>Des parents rassurés</h3><p>Présences, notes, devoirs et communiqués arrivent en temps réel.</p></div>
+<div class="c r" style="--i:5"><h3><span class="dot" style="background:var(--amb)"></span>Un pilotage clair</h3><p>Effectifs, minerval encaissé et taux de recouvrement visibles dès la connexion.</p></div>
+</div>
+<div class="st r" style="--i:6;margin-top:26px">
+<div class="t"><b class="big i" data-n="1248">0</b><small style="display:block;color:var(--mut)">élèves gérés dans un établissement</small></div>
+<div class="t"><b class="big v" data-n="24">0</b><small style="display:block;color:var(--mut)">classes actives</small></div>
+<div class="t"><b class="big gr">10/13</b><small style="display:block;color:var(--mut)">écoles ont choisi Premium</small></div>
+</div>
+</section>
+
+<section class="s">
+<p class="k r">Le constat</p>
+<h2 class="r" style="--i:1">Gérer une école, c’est jongler <em>avec dix outils.</em></h2>
+<div class="g">
+<div class="c r" style="--i:2"><h3>Du temps perdu</h3><p>Chaque rentrée, les mêmes listes sont ressaisies à la main, classe après classe.</p></div>
+<div class="c r" style="--i:3"><h3>Des erreurs qui s’accumulent</h3><p>Doublons, matricules incohérents, fiches introuvables.</p></div>
+<div class="c r" style="--i:4"><h3>Des impayés repérés trop tard</h3><p>Sans vue d’ensemble du minerval, les élèves non en ordre se découvrent après coup.</p></div>
+<div class="c r" style="--i:5"><h3>Des parents qui décrochent</h3><p>Une absence ou un résultat qui arrive tard, et la confiance s’érode.</p></div>
+</div>
+<p class="q r" style="--i:6">La vraie question n’est pas combien ça coûte, mais combien nous coûte de ne rien changer.</p>
+</section>
+
+<section class="s">
+<p class="k r">Un seul système</p>
+<h2 class="r" style="--i:1">Une porte d’entrée, <em>quatre profils</em></h2>
+<p class="lead r" style="--i:2">Élève, parent, enseignant ou administrateur : chacun se connecte au même endroit avec son matricule ou son e-mail, puis arrive dans son espace, avec les seules données de son école.</p>
+<div class="g">
+<div class="c r" style="--i:3"><h3 class="i">Direction & Administration</h3><p>Réinscriptions, suivi financier, horaires et statistiques de fréquentation.</p></div>
+<div class="c r" style="--i:4"><h3 class="v">Portail Élève</h3><p>Journal de classe, horaire des cours, résultats et dépôt des devoirs.</p></div>
+<div class="c r" style="--i:5"><h3 class="a">Tuteurs & Parents</h3><p>Présences au quotidien, justification d’absence en ligne, suivi scolaire.</p></div>
+</div>
+</section>
+
+<section class="s">
+<p class="k r">Le panneau de direction</p>
+<h2 class="r" style="--i:1">Tout l’établissement <em>en un regard</em></h2>
+<p class="lead r" style="--i:2">Dès la connexion : effectifs, corps enseignant, minerval encaissé et classes actives. Le taux de recouvrement se calcule tout seul.</p>
+<div class="st">
+<div class="c r" style="--i:3"><b class="big i">1 248</b><small style="display:block;color:var(--mut)">élèves inscrits</small></div>
+<div class="c r" style="--i:4"><b class="big v">48</b><small style="display:block;color:var(--mut)">enseignants</small></div>
+<div class="c r" style="--i:5"><b class="big gr">87 %</b><small style="display:block;color:var(--mut)">minerval encaissé</small></div>
+<div class="c r" style="--i:6"><b class="big a">24</b><small style="display:block;color:var(--mut)">classes actives</small></div>
+</div>
+<p class="r" style="--i:7;color:var(--mut);margin-top:14px;font-size:.9em">Exemple de tableau de bord. Recherche par nom ou matricule, filtre par classe, menu unique et alertes intégrées.</p>
+</section>
+
+<section class="s">
+<p class="k r">Élèves & import</p>
+<h2 class="r" style="--i:1">Inscrire un élève, c’est trente secondes. <em>286 lignes, quelques minutes.</em></h2>
+<p class="lead r" style="--i:2">Matricule unique et mot de passe temporaire générés automatiquement, identifiants envoyés par lien WhatsApp. Déposez votre Excel : EcoleApp propose la correspondance des colonnes avec un indice de confiance et signale les lignes à corriger avant d’importer.</p>
+<div class="st r" style="--i:3">
+<div class="c"><b class="big gr">278</b><small style="display:block;color:var(--mut)">lignes valides</small></div>
+<div class="c"><b class="big a">8</b><small style="display:block;color:var(--mut)">à corriger</small></div>
+<div class="c"><b class="big i">24</b><small style="display:block;color:var(--mut)">classes détectées</small></div>
+</div>
+<div class="g r" style="--i:4;margin-top:14px">
+<div class="t"><b>1. Charger</b><br><span style="color:var(--mut)">Le fichier .xlsx est lu, toutes feuilles comprises.</span></div>
+<div class="t"><b>2. Vérifier</b><br><span style="color:var(--mut)">Colonnes associées automatiquement, ajustables.</span></div>
+<div class="t"><b>3. Confirmer</b><br><span style="color:var(--mut)">Élèves et responsables créés en une seule opération.</span></div>
+</div>
+</section>
+
+<section class="s">
+<p class="k r">Le quotidien de l’école</p>
+<h2 class="r" style="--i:1">Emploi du temps, appel, parents : <em>tout est relié</em></h2>
+<div class="g">
+<div class="c r" style="--i:2"><h3 class="a">Emploi du temps sans collision</h3><p>Vue par classe, enseignant, salle ou liste. Si une classe ou un enseignant est déjà pris au même créneau, EcoleApp refuse.</p></div>
+<div class="c r" style="--i:3"><h3 class="gr">L’appel en trois touches</h3><p>Présent, retard ou absent, puis l’enseignant transmet l’appel. Exemple : 26 présents, 2 retards, 2 absents.</p></div>
+<div class="c r" style="--i:4"><h3 class="p">La scolarité dans la poche</h3><p>Un compte parent pour plusieurs enfants : présence (94 % dans l’exemple), notes, devoirs, évaluations, communiqués, justification d’absence en ligne.</p></div>
+</div>
+<p class="q r" style="--i:5">Une note saisie par l’enseignant apparaît aussitôt sur le bulletin et chez le parent.</p>
+</section>
+
+<section class="s">
+<p class="k r">Finances, communication & sécurité</p>
+<h2 class="r" style="--i:1">Encaisser, informer, <em>en toute sécurité</em></h2>
+<div class="g">
+<div class="c r" style="--i:2"><h3 class="gr">Finances & minerval</h3><p>Total encaissé et non payé par année, paiements par trimestre, élèves non en ordre repérés d’un coup d’œil, taux de recouvrement automatique.</p></div>
+<div class="c r" style="--i:3"><h3 class="v">Communication</h3><p>Communiqués avec catégorie, destinataires, épinglage et expiration. Notifications ciblées, justifications d’absence traitées par l’administration.</p></div>
+<div class="c r" style="--i:4"><h3 class="i">Isolation par école</h3><p>Chaque requête est filtrée sur l’école de l’utilisateur : un administrateur ne peut jamais ouvrir un élève d’une autre école.</p></div>
+<div class="c r" style="--i:5"><h3 class="a">Connexion protégée</h3><p>Mot de passe temporaire changé à la première connexion, accès par rôle, modules activés selon le forfait.</p></div>
+</div>
+</section>
+
+<section class="s">
+<p class="k r">Les forfaits</p>
+<h2 class="r" style="--i:1">Deux forfaits. <em>Zéro surprise.</em></h2>
+<div class="r" style="--i:2"><div class="tg" role="group" aria-label="Période"><button class="on" data-p="m">Mensuel</button><button data-p="a">Annuel</button></div>
+<div>Élèves inscrits : <b id="nv" class="v">300</b><input id="rg" type="range" min="50" max="2000" step="10" value="300" aria-label="Nombre d’élèves"></div></div>
+<div class="sim">
+<div class="c r" style="--i:3"><h3>Basic</h3><div class="pr i" id="tb">150 $</div><small id="pb" style="color:var(--mut)">0,50 $ par élève et par mois</small>
+<ul class="l"><li>Présences</li><li>Discipline</li><li class="no">Classement</li><li class="no">Paiements & minerval</li><li class="no">Communication</li></ul></div>
+<div class="c rec r" style="--i:4"><h3>Premium <span class="pill" style="font-size:11px;margin-left:6px">Recommandé</span></h3><div class="pr v" id="tp">240 $</div><small id="pp" style="color:var(--mut)">0,80 $ par élève et par mois</small>
+<ul class="l"><li>Présences</li><li>Discipline</li><li>Classement</li><li>Paiements & minerval</li><li>Communication</li></ul></div>
+</div>
+<p class="r" style="--i:5;color:var(--mut);margin-top:14px;font-size:.9em">Annuel : Basic 4,50 $ (−25 %), Premium 7,00 $ (−27 %) par élève. Socle commun inclus : élèves, parents, enseignants, classes, programmes, horaires et import Excel.</p>
+</section>
+
+<section class="s">
+<p class="k r">Mise en route</p>
+<h2 class="r" style="--i:1">Opérationnel <em>en quatre étapes</em></h2>
+<div class="g">
+<div class="c r" style="--i:2"><h3>1. Paramétrer l’école</h3><p>Profil, numéro WhatsApp, logo et année scolaire active.</p></div>
+<div class="c r" style="--i:3"><h3>2. Structurer l’académique</h3><p>Matières, classes, programme de chaque classe, puis horaires.</p></div>
+<div class="c r" style="--i:4"><h3>3. Faire entrer les personnes</h3><p>Import Excel des élèves, création des enseignants, rattachement des parents.</p></div>
+<div class="c r" style="--i:5"><h3>4. Piloter au quotidien</h3><p>Appel, notes, finances, communiqués : tout remonte à la direction.</p></div>
+</div>
+<h2 class="r" style="--i:6;margin-top:34px;font-size:clamp(26px,4vw,48px)">Choisissez votre forfait. <em>Démarrez aujourd’hui.</em></h2>
+<div class="r" style="--i:7"><a class="cta" href="https://ecoleapp.org" target="_blank" rel="noopener">ecoleapp.org</a><a class="cta w" href="https://wa.me/243972519906?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20EcoleApp." target="_blank" rel="noopener">WhatsApp +243 97 251 99 06</a></div>
+</section>
+
+</main>
+<script>
+(function(){
+var S=[].slice.call(document.querySelectorAll('.s')),i=-1,lock=false,N=S.length;
+var dots=document.getElementById('dots'),bar=document.getElementById('bar'),ct=document.getElementById('ct'),g=document.getElementById('glow');
+S.forEach(function(_,k){var b=document.createElement('button');b.setAttribute('aria-label','Diapositive '+(k+1));b.onclick=function(){go(k)};dots.appendChild(b)});
+function count(el){var n=+el.dataset.n,t=0,st=performance.now();(function f(now){t=Math.min(1,(now-st)/1200);el.textContent=Math.round(n*(1-Math.pow(1-t,3))).toLocaleString('fr-FR');if(t<1)requestAnimationFrame(f)})(st)}
+function go(k){
+ if(k<0||k>=N||k===i)return;
+ S.forEach(function(s,j){s.classList.toggle('on',j===k);s.classList.toggle('past',j<k)});
+ [].forEach.call(dots.children,function(d,j){d.classList.toggle('on',j===k)});
+ i=k;S[k].scrollTop=0;bar.style.width=((k+1)/N*100)+'%';ct.textContent=(k+1)+' / '+N;
+ g.style.setProperty('--x',[70,20,80,30,75,25,65,35,70,50][k%10]+'%');g.style.setProperty('--y',[20,70,25,65,30,75,20,60,25,50][k%10]+'%');
+ [].forEach.call(S[k].querySelectorAll('[data-n]'),function(e){setTimeout(function(){count(e)},500)});
+}
+function step(d){if(lock)return;lock=true;go(i+d);setTimeout(function(){lock=false},850)}
+function edge(d){var s=S[i];return s.scrollHeight>s.clientHeight+2&&((d>0&&s.scrollTop+s.clientHeight<s.scrollHeight-2)||(d<0&&s.scrollTop>2))}
+addEventListener('wheel',function(e){if(Math.abs(e.deltaY)<20||edge(e.deltaY))return;step(e.deltaY>0?1:-1)},{passive:true});
+addEventListener('keydown',function(e){var k=e.key;if(k==='ArrowDown'||k==='PageDown'||k===' ')step(1);else if(k==='ArrowUp'||k==='PageUp')step(-1);else if(k==='Home')go(0);else if(k==='End')go(N-1)});
+var y0=0;addEventListener('touchstart',function(e){y0=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',function(e){var d=y0-e.changedTouches[0].clientY;if(Math.abs(d)>50&&!edge(d))step(d>0?1:-1)},{passive:true});
+document.getElementById('nx').onclick=function(){step(1)};document.getElementById('pv').onclick=function(){step(-1)};
+var per='m',rg=document.getElementById('rg');
+function f(v){return v.toLocaleString('fr-FR',{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2})}
+function calc(){var n=+rg.value,a=per==='a';
+ document.getElementById('nv').textContent=n.toLocaleString('fr-FR');
+ document.getElementById('tb').textContent=f(n*(a?4.5:.5))+' $';
+ document.getElementById('tp').textContent=f(n*(a?7:.8))+' $';
+ var u=a?' par élève et par an':' par élève et par mois';
+ document.getElementById('pb').textContent=(a?'4,50 $':'0,50 $')+u;
+ document.getElementById('pp').textContent=(a?'7,00 $':'0,80 $')+u}
+rg.oninput=calc;
+[].forEach.call(document.querySelectorAll('.tg button'),function(b){b.onclick=function(){per=b.dataset.p;[].forEach.call(b.parentNode.children,function(x){x.classList.toggle('on',x===b)});calc()}});
+calc();go(0);
+})();
+</script>
+</body>
+</html>
